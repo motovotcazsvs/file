@@ -8,7 +8,9 @@
 #include <QFileDialog>
 
 void writeFile(QString, int);
-void writeFile(QFile &, QString &);
+void writeFile(QFile &, QString);
+void writeFile(QFile &, QString &, int);
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -69,11 +71,13 @@ void MainWindow::on_pushButton_2_clicked()
     QFile new_file(name_new_file);
     qDebug() << name_new_file;
     if(new_file.exists(name_new_file)){
-       //дописать данные в файл
+       writeFile(new_file, "дописано");
     }
     else {
         new_file.open(QIODevice::WriteOnly | QIODevice::Text);
-        //записать данные
+        QTextStream cout(&new_file);
+        QString s = "написано";
+        cout << s << endl;
         new_file.close();
     }
 }
@@ -89,7 +93,7 @@ void MainWindow::on_pushButton_clicked()
     qDebug() << open_folder;
 }
 
-void writeFile(QString str, int num_str)
+void writeFile(QString str, int num_str)//только для файла настройки бо все в одну строку
 {
     QFile file("settingsfile.txt");
     QStringList strList;
@@ -101,8 +105,8 @@ void writeFile(QString str, int num_str)
         file.close();
     }
     /*Добавляем строку и сохраняем содержимое контейнера в тот же файл*/
-    if(file.open(QIODevice::WriteOnly | QIODevice::Text)){
-        strList[num_str] = str;
+    if(file.open(QIODevice::WriteOnly)){// | QIODevice::Text)){
+        strList[num_str] = str + "\n";
         QTextStream stream(&file);
         foreach(QString s, strList){
             qDebug() << s;
@@ -116,7 +120,11 @@ void writeFile(QString str, int num_str)
     }
 }
 
-void writeFile(QFile &, QString &)
+void writeFile(QFile &file, QString str)
 {
-
+    QTextStream stream(&file);
+    if (file.open(QIODevice::Append | QIODevice::Text)) {
+       stream << str << endl;
+    }
+    file.close();
 }
