@@ -82,8 +82,6 @@ void MainWindow::on_pushButton_2_clicked()
     }
 }
 
-
-
 void MainWindow::on_pushButton_clicked()
 {
     QString open_folder = QFileDialog::getExistingDirectory(this, tr("папка сохранянея файлов"), QDir::currentPath(),
@@ -127,4 +125,28 @@ void writeFile(QFile &file, QString str)
        stream << str << endl;
     }
     file.close();
+}
+
+void writeFile(QFile &file, QString &str, int num_str)
+{
+    QStringList strList;
+    /*Считываем исходный файл в контейнер*/
+    if(file.open(QIODevice::ReadOnly)){
+        while(!file.atEnd()){
+            strList << file.readLine();
+        }
+        file.close();
+    }
+    /*Добавляем строку и сохраняем содержимое контейнера в тот же файл*/
+    if(file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        strList[num_str] = str + "\n";
+        QTextStream stream(&file);
+
+        foreach(QString s, strList){
+            stream << s << endl;
+
+        }
+
+        file.close();
+    }
 }
