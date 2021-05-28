@@ -38,6 +38,19 @@ MainWindow::MainWindow(QWidget *parent) :
         file_data_path = file_settings_strings[0];
         save_settings_comport = file_settings_strings[1];
         save_settings_speed = file_settings_strings[2];
+
+        QString file_settings_path2 = "sett.txt";
+        QFile settings_file2(file_settings_path2);
+        QTextStream stream2(&settings_file2);
+        QString st44 = "hello\nword";
+        if (settings_file2.open(QIODevice::WriteOnly | QIODevice::Text)) {
+           stream2 << st44 << endl;
+        }
+        settings_file2.close();
+
+        settings_file.open(QIODevice::WriteOnly | QIODevice::Text);
+        QTextStream cout(&settings_file);
+        cout << file_data_path << "\n";
     }
     else {
         qDebug() << "Файл не существует!";
@@ -55,6 +68,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QString d;
     d = dat.toString("dd.MM.yyyy");
     qDebug() << d;
+
+    //проверка есть ли такой путь
+    QDir dir;
+    if(!dir.exists("C:/")) {
+        qDebug() << "нет такого пути";
+    }
 
 }
 
